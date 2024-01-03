@@ -43,28 +43,29 @@ class ConnectWidget extends StatelessWidget {
           makePhoneCall(launcher);
         }
         else if(type == 'mail'){
-          openUrl('mailto:${launcher}');
+          openUrl('mailto:$launcher');
         }
         else if(type=="whats"){
-          openWhatsapp(context,"https://$launcher");
+          openWhatsapp(context,launcher);
         }
         else if(type =='web'){
-          openUrl("https://$launcher");
+          debugPrint('url: $launcher');
+          openUrl(launcher);
         }
         else if(type =='youtube'){
-          openUrl("https://$launcher");
+          openUrl(launcher);
         }
         else if(type =='linkedin'){
-          openUrl( "https://$launcher");
+          openUrl(launcher);
         }
         else if(type =='facebook'){
-          openUrl( "https://$launcher");
+          launchFacebook(launcher);
         }   else if(type =='twitter'){
-          openUrl( "https://$launcher");
+          openUrl(launcher);
 
         }
         else if(type =='instagram'){
-          openUrl( "https://$launcher");
+          openUrl(launcher);
 
         }
         // else if(type=="linkdin"){

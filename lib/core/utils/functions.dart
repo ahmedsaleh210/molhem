@@ -16,59 +16,53 @@ bool isEmailValid(String email) {
       .hasMatch(email);
 }
 
-
-Widget heightSpace(double height){
+Widget heightSpace(double height) {
   return SizedBox(height: height);
 }
 
-
-Widget widthSpace(double width){
+Widget widthSpace(double width) {
   return SizedBox(width: width);
 }
 
-showModalBottomSheetWidget(BuildContext  context, Widget content){
+showModalBottomSheetWidget(BuildContext context, Widget content) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10.w))
-      ),
+          borderRadius: BorderRadius.all(Radius.circular(10.w))),
       context: context,
       // enableDrag: true,
       // useRootNavigator: false,
       isScrollControlled: true,
       backgroundColor: Colors.black12,
-      builder: (BuildContext bc){
+      builder: (BuildContext bc) {
         return Padding(
-            padding: MediaQuery.of(context).viewInsets,
-            child: content);
-      }
-  );
+            padding: MediaQuery.of(context).viewInsets, child: content);
+      });
 }
 
- showDatePickerFun(BuildContext  context) async{
+showDatePickerFun(BuildContext context) async {
   DateTime? pickedDate = await showDatePicker(
-      context: context, //context of current state
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2101),
-
+    context: context, //context of current state
+    initialDate: DateTime.now(),
+    firstDate: DateTime(2020),
+    lastDate: DateTime(2101),
   );
   String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate!);
-   return formattedDate;
+  return formattedDate;
 }
 
-pickFile() async{
+pickFile() async {
   FilePickerResult? result = await FilePicker.platform.pickFiles();
   String file = '';
-  if(result != null) {
-     file = result.files.single.path!;
+  if (result != null) {
+    file = result.files.single.path!;
   }
   return file;
 }
 
-pickMultiFiles() async{
-  List<String> files= [];
+pickMultiFiles() async {
+  List<String> files = [];
   FilePickerResult? result = await FilePicker.platform.pickFiles();
-  if(result != null){
+  if (result != null) {
     for (var element in result.files) {
       files.add(element.path!);
     }
@@ -76,8 +70,8 @@ pickMultiFiles() async{
   return files;
 }
 
-showSnackBar(message, BuildContext context){
- SnackBar  snackBar = SnackBar(
+showSnackBar(message, BuildContext context) {
+  SnackBar snackBar = SnackBar(
     content: Text(message),
   );
 
@@ -93,10 +87,38 @@ Future<void> makePhoneCall(String phoneNumber) async {
 }
 
 Future<void> openUrl(String url) async {
-  if (await canLaunchUrl(Uri.parse(url))) {
-    await launchUrl(Uri.parse(url));
+  if (url.contains("http://") || url.contains("https://")) {
+    await canLaunchUrl(Uri.parse(url))
+        ? await launchUrl(Uri.parse(url))
+        : throw 'Could not launch Url';
   } else {
-    throw 'Could not launch $url';
+    String newUrl = "https://$url";
+    await canLaunchUrl(Uri.parse(newUrl))
+        ? await launchUrl(Uri.parse(newUrl))
+        : throw 'Could not launch Url';
+  }
+}
+
+launchFacebook(String launcher) async {
+  String fbProtocolUrl;
+  if (Platform.isIOS) {
+    fbProtocolUrl = 'fb://profile/page_id';
+  } else {
+    fbProtocolUrl = 'fb://page/page_id';
+  }
+
+  String fallbackUrl =
+      launcher.contains("https://") ? launcher : "https://$launcher";
+
+  try {
+    //
+    bool launched = await launchUrl(Uri.parse(fbProtocolUrl));
+
+    if (!launched) {
+      await launchUrl(Uri.parse(fallbackUrl));
+    }
+  } catch (e) {
+    await launchUrl(Uri.parse(fallbackUrl));
   }
 }
 
@@ -104,28 +126,27 @@ openWhatsapp(context, whatsapp) async {
   // //String link = 'https://api.whatsapp.com/send/?phone=$whatsapp&text=مرحبا';
   // var whatappURL_ios = "https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
 
-  String link = "https://wa.me/$whatsapp";
+  String link = "whatsapp://send?phone=$whatsapp&text=مرحبا";
   if (await canLaunchUrl(Uri.parse(link))) {
     return launchUrl(Uri.parse(link));
   } else {
-    showSnackBar("يجب تحميل الواتساب", context);
+    launchUrl(Uri.parse('https://wa.me/$whatsapp'));
   }
   //if (Platform.isIOS) {
-    // for iOS phone only
-    // if (await canLaunchUrl(Uri.parse(whatappURL_ios))) {
-    //   await launchUrl(Uri.parse(whatappURL_ios));
-    // } else {
-    //   ScaffoldMessenger.of(context)
-    //       .showSnackBar(SnackBar(content: new Text("يجب تحميل الواتساب")));
-    // }
+  // for iOS phone only
+  // if (await canLaunchUrl(Uri.parse(whatappURL_ios))) {
+  //   await launchUrl(Uri.parse(whatappURL_ios));
+  // } else {
+  //   ScaffoldMessenger.of(context)
+  //       .showSnackBar(SnackBar(content: new Text("يجب تحميل الواتساب")));
+  // }
 
   //} else {
 
   //}
 }
-openLinkdin(context,linkedinLink) async {
 
-
+openLinkdin(context, linkedinLink) async {
   String link = "https://$linkedinLink";
   if (await canLaunchUrl(Uri.parse(link))) {
     return launchUrl(Uri.parse(link));
@@ -150,7 +171,7 @@ Future<void> sendEmail(email) async {
   String? encodeQueryParameters(Map<String, String> params) {
     return params.entries
         .map((MapEntry<String, String> e) =>
-    '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
+            '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}')
         .join('&');
   }
 
@@ -180,7 +201,7 @@ Future<void> showMyDialog(BuildContext context) async {
                   left: 20.w, right: 20.w, top: 30.h, bottom: 30.h),
               child: Row(
                 children: [
-                  CircularProgressIndicator(),
+                  const CircularProgressIndicator(),
                   widthSpace(20.w),
                   Text('Loading ...........',
                       style: Theme.of(context)
@@ -194,8 +215,6 @@ Future<void> showMyDialog(BuildContext context) async {
     },
   );
 }
-
-
 
 showFailureDialoge(BuildContext context, message) {
   AwesomeDialog(
