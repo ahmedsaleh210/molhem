@@ -126,11 +126,11 @@ openWhatsapp(context, whatsapp) async {
   // //String link = 'https://api.whatsapp.com/send/?phone=$whatsapp&text=مرحبا';
   // var whatappURL_ios = "https://wa.me/$whatsapp?text=${Uri.parse("hello")}";
 
-  String link = "whatsapp://send?phone=$whatsapp&text=مرحبا";
+  String link = "whatsapp://send?phone=+974$whatsapp&text=مرحبا";
   if (await canLaunchUrl(Uri.parse(link))) {
     return launchUrl(Uri.parse(link));
   } else {
-    launchUrl(Uri.parse('https://wa.me/$whatsapp'));
+    launchUrl(Uri.parse('https://wa.me/+974$whatsapp'));
   }
   //if (Platform.isIOS) {
   // for iOS phone only
